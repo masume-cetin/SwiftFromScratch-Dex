@@ -23,11 +23,14 @@ struct ContentView: View {
             predicates.append(NSPredicate(format: "name contains[c] %@", searchText))
         }
         //filter by favor predicate
-        
+        if filterByFavorites{
+            predicates.append(NSPredicate(format: "favorite == %d", true))
+        }
         //combine predicates
         return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
     }
     @State private var searchText = ""
+    @State private var filterByFavorites = false
     var body: some View {
         NavigationStack {
             List {
@@ -42,8 +45,13 @@ struct ContentView: View {
                 }
                 .frame(width:100,height: 100)
                 VStack(alignment: .leading) {
-                Text(pokemon.name!.capitalized).fontWeight(.bold)
-                
+                    HStack{
+                        Text(pokemon.name!.capitalized).fontWeight(.bold)
+                        if pokemon.favorite {
+                            Image(systemName: "star.fill")
+                                .foregroundColor(.yellow)
+                        }
+                    }
                 HStack{
                     ForEach(pokemon.types!, id : \.self){
                 type in
@@ -67,13 +75,22 @@ struct ContentView: View {
             .onChange(of:searchText){
                 pokedex.nsPredicate = dynamicPredicate
             }
+            .onChange(of:filterByFavorites){
+                pokedex.nsPredicate = dynamicPredicate
+            }
             .navigationDestination(for: Pokemon.self){
             pokemon in
             Text(pokemon.name ?? "")
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
+                    Button{
+                        filterByFavorites.toggle()
+                    }
+                    label : {
+                        Label("Filter By Favorites", systemImage: filterByFavorites ? "star.fill" : "star")
+                    }
+                    .tint(.yellow)
                 }
                 ToolbarItem {
                     Button("Add Item", systemImage: "plus") {
