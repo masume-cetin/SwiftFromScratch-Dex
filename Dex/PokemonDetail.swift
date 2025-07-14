@@ -77,9 +77,9 @@ struct PokemonDetail: View {
                     showShiny.toggle()
                 }
                 label : {
-                    Label("Filter By Favorites", systemImage: showShiny ? "star.fill" : "star")
+                    Label("Filter By Favorites", systemImage: showShiny ? "wand.and.stars" : "wand.and.stars.inverse")
                 }
-                .tint(.yellow)
+                .tint(showShiny ? .yellow : .primary)
             }
         }
     }
