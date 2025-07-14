@@ -15,6 +15,9 @@ struct ContentView: View {
         sortDescriptors: [SortDescriptor( \.id)],
         animation: .default)
     private var pokedex
+    @FetchRequest<Pokemon>(
+        sortDescriptors: [])
+    private var all
     let fetcher = FetchService()
     private var dynamicPredicate : NSPredicate{
         var predicates  : [NSPredicate] = []
@@ -33,7 +36,7 @@ struct ContentView: View {
     @State private var filterByFavorites = false
     
     var body: some View {
-        if pokedex.isEmpty {
+        if all.isEmpty {
             ContentUnavailableView {
                 Label("No Pokemon", image: .nopokemon)
             } description: {
@@ -83,9 +86,22 @@ struct ContentView: View {
                                     }
                                 }
                             }
+                            .swipeActions(edge:.leading) {
+                                Button(pokemon.favorite ? "Remove From Favorites" : "Add To Favorites",systemImage : "star")
+                                {
+                                    pokemon.favorite.toggle()
+                                    do {
+                                        try viewContext.save()
+                                    }
+                                    catch{
+                                        print(error)
+                                    }
+                                }
+                                .tint(pokemon.favorite ? .gray : .yellow)
+                            }
                         }
                     } footer :{
-                        if pokedex.count < 151
+                        if all.count < 151
                         {
                             ContentUnavailableView {
                                 Label("Missing Pokemon",image : .nopokemon)
@@ -101,8 +117,6 @@ struct ContentView: View {
                         }
                     }
                     }
-                
-                }
                 .navigationTitle("Pokedex")
                 .searchable(text: $searchText, prompt : "Find a Pokemon")
                 .autocorrectionDisabled()
@@ -127,13 +141,16 @@ struct ContentView: View {
                         .tint(.yellow)
                     }
                 }
+                
+                }
+               
             }
         }
     private func getPokemon(from id : Int) {
         Task{
-            for _ in id..<152{
+            for i in id..<152{
                 do {
-                    let fetchedPokemon = try await fetcher.fetchPokemon(id)
+                    let fetchedPokemon = try await fetcher.fetchPokemon(i)
                     let pokemon = Pokemon(context: viewContext)
                     pokemon.id = fetchedPokemon.id
                     pokemon.name = fetchedPokemon.name
