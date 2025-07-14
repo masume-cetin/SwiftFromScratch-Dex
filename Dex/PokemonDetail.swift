@@ -14,7 +14,7 @@ struct PokemonDetail: View {
     var body: some View {
         ScrollView {
             ZStack {
-                Image(.rockgroundsteelfightingghostdarkpsychic)
+                Image(pokemon.background)
                     .resizable()
                     .scaledToFit()
                     .shadow(color : .black ,radius: 6)
@@ -67,6 +67,17 @@ struct PokemonDetail: View {
             .padding()
         }
         .navigationTitle(pokemon.name!.capitalized)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button{
+                    showShiny.toggle()
+                }
+                label : {
+                    Label("Filter By Favorites", systemImage: showShiny ? "star.fill" : "star")
+                }
+                .tint(.yellow)
+            }
+        }
     }
 }
 
