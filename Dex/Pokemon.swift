@@ -98,7 +98,7 @@ class Pokemon : Decodable {
         }
     }
     var background : ImageResource {
-        switch types![0] {
+        switch types[0] {
         case "rock" , "ground" , "steel" , "fighting" , "ghost" , "dark" , "psychic" :
                 .rockgroundsteelfightingghostdarkpsychic
         case "fire" , "dragon" :
