@@ -9,7 +9,7 @@ import WidgetKit
 import SwiftUI
 import CoreData
 
-struct Provider: TimelineProvider {
+/*struct Provider: TimelineProvider {
     var randomPokemon : Pokemon {
         var results : [Pokemon] = []
         do{
@@ -161,4 +161,4 @@ struct DexWidget: Widget {
 } timeline: {
     SimpleEntry.placeholder
     SimpleEntry.placeholder2
-}
+}*/
